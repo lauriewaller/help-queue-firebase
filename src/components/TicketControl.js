@@ -60,15 +60,10 @@ class TicketControl extends React.Component {
     }
   };
   //CREATE: creates new ticket when submit button is clicked on in NewTicketForm. Triggered within handleFormSubmission function, where the inputs from form are passed into the function. changes form to false
-  handleAddingNewTicketToList = (newTicket) => {
+  handleAddingNewTicketToList = () => {
     const { dispatch } = this.props;
-    const action = a.addTicket(newTicket);
+    const action = a.toggleForm();
     dispatch(action);
-    console.log("wait time: ");
-    console.log(typeof newTicket.formattedWaitTime);
-    //this.setState({formVisibleOnPage: false});
-    const action2 = a.toggleForm();
-    dispatch(action2);
   };
   //DETAIL:this is passed down to TicketList, then Ticket, and thus is an example of prop drilling.
   handleEditingTicketInList = (ticketToEdit) => {

@@ -1,32 +1,32 @@
 import React from "react";
-import { v4 } from "uuid";
+// import { v4 } from "uuid";
+//We remove the uuid library because Firebase will now create IDs for our tickets. We should no longer do this in our application.
 import PropTypes from "prop-types";
 import ReusableForm from "./ReusableForm";
-import Moment from "moment";
+// import Moment from "moment";
+import { useFirestore } from "react-redux-firebase";
 
 function NewTicketForm(props) {
+  const firestore = useFirestore();
   return (
     <React.Fragment>
       <ReusableForm
-        formSubmissionHandler={handleNewTicketFormSubmission}
+        formSubmissionHandler={addTicketToFirestore}
         buttonText="Help!"
       />
     </React.Fragment>
   );
 
-  function handleNewTicketFormSubmission(event) {
+  function addTicketToFirestore(event) {
     event.preventDefault();
-    props.onNewTicketCreation({
+    props.onNewTicketCreation();
+    return firestore.collection("tickets").add({
+      //We need to specify which collection we will add a ticket to. Since the collection will hold tickets, we'll call it tickets. Note that unlike with a SQL database, our Firestore database doesn't care if this collection doesn't exist in the database yet. A collection is loosely equivalent to an SQL table - except we'd need to create the table along with a schema if we were using SQL.
       names: event.target.names.value,
       location: event.target.location.value,
       issue: event.target.issue.value,
-      id: v4(),
-      timeOpen: new Moment(),
-      formattedWaitTime: new Moment().fromNow(true),
+      timeOpen: firestore.FieldValue.serverTimestamp(),
     });
-    console.log(event.target.names.value);
-    console.log(event.target.location.value);
-    console.log(event.target.issue.value);
   }
   // event.target gives us access to the event that was just fired. In this case, we just had a submit event. We can actually grab the values that came from that submit event.
 }
